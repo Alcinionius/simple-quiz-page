@@ -1,0 +1,210 @@
+<!doctype html>
+<html>
+  <head>
+    <style>
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        margin: 0;
+        padding: 20px;
+        color: #fff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+      #container {
+        background: rgba(0, 0, 0, 0.6);
+        border-radius: 12px;
+        padding: 30px 40px;
+        width: 400px;
+        box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+        text-align: center;
+      }
+      h1 {
+        margin-bottom: 10px;
+        font-weight: 700;
+        font-size: 2rem;
+        text-shadow: 1px 1px 4px rgba(0,0,0,0.7);
+      }
+      p {
+        color: #ddd;
+        font-size: 1.1rem;
+        margin-bottom: 20px;
+      }
+      button {
+        padding: 12px 28px;
+        font-size: 1rem;
+        border-radius: 8px;
+        border: none;
+        background: #ff6f61;
+        color: #fff;
+        cursor: pointer;
+        margin: 8px 6px;
+        box-shadow: 0 4px 8px rgba(255,111,97,0.6);
+        transition: background 0.3s ease, transform 0.2s ease;
+      }
+      button:hover {
+        background: #ff3b2e;
+        transform: scale(1.05);
+      }
+      #progress-bar {
+        height: 12px;
+        background: #444;
+        border-radius: 6px;
+        overflow: hidden;
+        margin-bottom: 20px;
+      }
+      #progress {
+        height: 100%;
+        width: 0%;
+        background: #ff6f61;
+        transition: width 0.4s ease;
+      }
+      #feedback {
+        margin-top: 15px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        min-height: 24px;
+        color: #ffd700;
+        text-shadow: 0 0 5px #ffd700;
+      }
+    </style>
+    <title>A simple quiz!!!!!!!</title>
+  </head>
+  <body>
+    <div id="container">
+      <div id="main-page">
+        <h1>Welcome semuanya</h1>
+        <p>Test otakmu disini.</p>
+        <button onclick="startQuiz()">Start Quiz</button>
+      </div>
+      <div id="quiz-page" style="display:none;">
+        <h1>Quiz Page</h1>
+        <div id="progress-bar"><div id="progress"></div></div>
+        <div id="quiz-content"></div>
+        <div id="feedback"></div>
+      </div>
+    </div>
+    <script>
+      let benarCount = 0;
+      const totalQuiz = 5;
+      let currentQuiz = 0;
+
+      const quizzes = [
+        {
+          question: "Siapa yang suka main petasan?",
+          answers: [
+            { text: "Agus", correct: true },
+            { text: "Sandi", correct: false },
+            { text: "Nur", correct: false }
+          ]
+        },
+        {
+          question: "Apa cita cita saya?",
+          answers: [
+            { text: "jadi manusia", correct: true },
+            { text: "agus buntung", correct: false },
+            { text: "gak jadi apa apa", correct: false }
+          ]
+        },
+        {
+          question: "Siapa kah anda?",
+          answers: [
+            { text: "seorang gay", correct: true },
+            { text: "seseorang", correct: false },
+            { text: "Jokowi", correct: false }
+          ]
+        },
+        {
+          question: "Apa fungsi \"!doctype html\" dalam coding?",
+          answers: [
+            { text: "untuk memulai coding", correct: false },
+            { text: "gak tau ko tanya saya", correct: true },
+            { text: "buat mengakhiri program", correct: false }
+          ]
+        },
+        {
+          question: "Apa yang terjadi jika kamu tidak menjawab quiz ini?",
+          answers: [
+            { text: "g knp knp", correct: false },
+            { text: "dapet hp", correct: false },
+            { text: "tak samperi", correct: true }
+          ]
+        }
+      ];
+
+      function startQuiz() {
+        benarCount = 0;
+        currentQuiz = 0;
+        document.getElementById('main-page').style.display = 'none';
+        document.getElementById('quiz-page').style.display = 'block';
+        document.getElementById('feedback').textContent = '';
+        updateProgress();
+        showQuiz();
+      }
+
+      function updateProgress() {
+        const progressPercent = ((currentQuiz) / totalQuiz) * 100;
+        document.getElementById('progress').style.width = progressPercent + '%';
+      }
+
+      function showQuiz() {
+        const quiz = quizzes[currentQuiz];
+        const quizContent = document.getElementById('quiz-content');
+        quizContent.innerHTML = `<p>${quiz.question}</p>`;
+        quiz.answers.forEach((answer, index) => {
+          const btn = document.createElement('button');
+          btn.textContent = answer.text;
+          btn.onclick = () => jawabQuiz(answer.correct);
+          quizContent.appendChild(btn);
+        });
+      }
+
+      function jawabQuiz(isCorrect) {
+        const feedback = document.getElementById('feedback');
+        if (isCorrect) {
+          benarCount++;
+          feedback.textContent = 'Jawaban benar!';
+          feedback.style.color = '#00ff00';
+          feedback.style.textShadow = '0 0 8px #00ff00';
+        } else {
+          feedback.textContent = 'Jawaban salah!';
+          feedback.style.color = '#ff4500';
+          feedback.style.textShadow = '0 0 8px #ff4500';
+        }
+        currentQuiz++;
+        updateProgress();
+        if (currentQuiz < totalQuiz) {
+          setTimeout(() => {
+            feedback.textContent = '';
+            showQuiz();
+          }, 1200);
+        } else {
+          setTimeout(showQuizEnd, 1200);
+        }
+      }
+
+      function showQuizEnd() {
+        const persen = Math.round((benarCount / totalQuiz) * 100);
+        const quizContent = document.getElementById('quiz-content');
+        quizContent.innerHTML = `
+          <h2>Quiz selesai!</h2>
+          <p>kelar.</p>
+          <p>Kamu benar ${benarCount} dari ${totalQuiz} soal (${persen}%).</p>
+          <button onclick="restartQuiz()">Ulangi Quiz</button>
+        `;
+        document.getElementById('feedback').textContent = '';
+        document.getElementById('progress').style.width = '100%';
+      }
+
+      function restartQuiz() {
+        benarCount = 0;
+        currentQuiz = 0;
+        document.getElementById('feedback').textContent = '';
+        document.getElementById('progress').style.width = '0%';
+        showQuiz();
+      }
+    </script>
+  </body>
+</html>
